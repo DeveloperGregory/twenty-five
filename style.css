@@ -1,0 +1,33 @@
+body{
+    background-color: pink;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
+
+
+#break-box, #session-box, #timer-controls{
+    background-color: rgb(255, 255, 148);
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+}
+
+#main{
+    background-color: orange;
+    border-radius: 10px;
+    margin-top: 50px;
+    
+}
+
+#timer-controls{
+    margin-top: 20px;
+}
+
+#time-left{
+    border-style: solid;
+    font-size: 50pt;
+}
+
+#timer-label{
+    font-size: 18pt;
+    font-weight: bold;
+}

@@ -4,37 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
     <title>Pomodoro Timer</title>
 </head>
 <body>
     <div id="main" class="container">
-        <h2>25+5 Timer (Pomodoro Timer)</h2>
+        <h2 class="text-center">25+5 Timer (Pomodoro Timer)</h2>
         <div class='row'>
-            <div id='break-box' class='col-sm-6'>
-                <h3 id='break-label'></h3>
+            <div id='break-box' class='col-sm-4'>
+                <h3 id='break-label' class="text-center">Break Length</h3>
                 <div>
-                    <button id='break-decrement'>Decrement</button>
-                    <h4 id='break-length'>5</h4>
-                    <button id='break-increment'>Increment</button>
+                    <button id='break-increment' class='btn btn-primary'>Increment</button>
+                    <h4 id='break-length'>0</h4>
+                    <button id='break-decrement' class='btn btn-primary'>Decrement</button>
                 </div>
             </div>
-            <div id='session-box' class='col-sm-6'>
-                <h3 id='session-label'></h3>
+            <div id='display' class='col-sm-4'>
+                <p id='timer-label' class='text-center'>Session Timer</p>
+                <p id='time-left' class='text-center'>00:00</p>
+            </div>
+            <div id='session-box' class='col-sm-4'>
+                <h3 id='session-label' class='text-center'>Session Length</h3>
                 <div>
-                    <button id='session-decrement'>Decrement</button>
+                    <button id='session-increment' class='btn btn-primary'>Increment</button>
                     <h4 id='session-length'>25</h4>
-                    <button id='session-increment'>Increment</button>
+                    <button id='session-decrement' class='btn btn-primary'>Decrement</button>
                 </div>
             </div>
         </div>
               
-        <div id='display'>
-            <p id='timer-label'></p>
-            <p id='time-left'></p>
-        </div>
+        
         <div id='timer-controls'>
-
+            <button id="start_stop" class='btn btn-success'>Start/Stop</button>
+            <button id="reset" class='btn btn-danger'>Reset</button>
         </div>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>
