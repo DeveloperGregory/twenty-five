@@ -9,39 +9,76 @@ let sessionDec = document.getElementById('session-decrement');
 let timerDisplay = document.getElementById('time-left');
 let resetBtn = document.getElementById('reset');
 let startStop = document.getElementById('start_stop');
-let isTimerRunning = false;
-let timeLeft = [BEGINSESSION,"00"];
-let breakLength = BEGINBREAK;
-let sessionLength = BEGINSESSION;
+let timerLabel = document.getElementById('timer-label');
+
+
+class TimerVar{
+    constructor(timeLeft, breakLength, sessionLength, isTimerRunning, currTimer){
+        this.timeLeft = timeLeft;
+        this.breakLength = breakLength;
+        this.sessionLength = sessionLength;
+        this.isTimerRunning = isTimerRunning;
+        this.currTimer = currTimer;
+    };
+    
+    setBreak = function(amount){
+        this.breakLength = amount;
+    };
+    getBreak = function(){
+        return this.breakLength;
+    };
+
+    setSession = function(amount){
+        this.sessionLength = amount;
+    };
+    getSession = function(){
+        return this.sessionLength;
+    };
+
+    setIsRunning = function(value){
+        this.isTimerRunning = value
+    };
+    getIsRunning = function(){
+        return this.isTimerRunning;
+    };
+
+    setTimeLeft = function(min,sec){
+        this.timeLeft = [min,sec];
+    };
+
+    setTimerType = function(tType){
+        this.currTimer = tType;
+    };
+}
+
+let freshTimer = new TimerVar([BEGINSESSION,00],BEGINBREAK,BEGINSESSION, false, 'session');
 
 function updateDisplay(){
-    breakDisplay.innerHTML = breakLength;
-    sessionDisplay.innerHTML = sessionLength;
-    timerDisplay.innerHTML = timeLeft[0] + ":" + timeLeft[1];
+    let seconds = (freshTimer.timeLeft[1] > 9) ? freshTimer.timeLeft[1] : "0" + freshTimer.timeLeft[1];
+    breakDisplay.innerHTML = freshTimer.getBreak();
+    sessionDisplay.innerHTML = freshTimer.getSession();
+    timerDisplay.innerHTML = freshTimer.timeLeft[0] + ":" + seconds;
+    timerLabel.innerHTML = freshTimer.currTimer;
     
 }
 
-function changeSession(amount){
-    sessionLength += amount; 
-    if(sessionLength >= 60){
-        sessionLength = 60;
-    }
-    if(sessionLength <= 0){
-        sessionLength = 0;
+function changeTimes(timerType, amount){
+    let newTime = (timerType === 'session') ? freshTimer.getSession() : freshTimer.getBreak();
+    if(newTime + amount >= 60){
+        newTime = 60;
+    }else if(newTime + amount <= 0){
+        newTime = 0;
+    }else{
+        newTime += amount;
     }
 
-    timeLeft[0] = sessionLength;
-    updateDisplay();
-}
-
-function changeBreak(amount){
-    breakLength += amount; 
-    if(breakLength >= 60){
-        breakLength = 60;
+    if(timerType === 'session'){
+        freshTimer.setSession(newTime);
+        freshTimer.setTimeLeft(newTime,00);
+    }else if(timerType === 'break'){
+        freshTimer.setBreak(newTime);
     }
-    if(breakLength <= 0){
-        breakLength = 0;
-    }
+    
     updateDisplay();
 }
 
@@ -52,36 +89,50 @@ function resetApp(){
 }
 
 function countDown(){
-    let minutes = timeLeft[0];
-    let seconds = timeLeft[1];
-    if(isTimerRunning){
-        seconds -= 1;
-        if(seconds <= "00"){
-            seconds = 59;
-            if(minutes > 0){
+    if(freshTimer.isTimerRunning){
+        let currentTimer = freshTimer.currTimer;
+        let minutes = freshTimer.timeLeft[0];
+        let seconds = freshTimer.timeLeft[1];
+        if(minutes > 0){
+            if(seconds > 0){
+                seconds -= 1;
+            }else{
+                seconds = 59;
                 minutes -= 1;
             }
+        }else{
+            if(seconds == 0){
+                alert("end time")
+                if(freshTimer.currTimer === "session"){
+                    freshTimer.setTimerType("break");
+                    freshTimer.setTimeLeft(freshTimer.getBreak,00);
+                }else{
+                    freshTimer.setTimerType('session');
+                    freshTimer.setTimeLeft(freshTimer.getSession,00);
+                }
+                
+                toggleTimer();
+            }else{
+                seconds = ((seconds == 0) ? 59 : seconds -= 1);  
+            }
         }
-        timeLeft[0] = minutes;
-        timeLeft[1] = (seconds > 9) ? seconds : "0" + seconds;
+
+        
+        freshTimer.setTimeLeft(minutes,seconds);
         updateDisplay();
     }
-    
+        
 }
 
 function toggleTimer(){
-    if(isTimerRunning){
-        isTimerRunning = false;
-    }else{
-        isTimerRunning = true;
-    }
+    freshTimer.setIsRunning((freshTimer.isTimerRunning) ? false : true);
 }
 
 updateDisplay();
-breakInc.addEventListener("click", () => changeBreak(1));
-breakDec.addEventListener("click", () => changeBreak(-1));
-sessionInc.addEventListener("click", () => changeSession(1));
-sessionDec.addEventListener("click", () => changeSession(-1));
+breakInc.addEventListener("click", () => changeTimes("break", 1));
+breakDec.addEventListener("click", () => changeTimes("break", -1));
+sessionInc.addEventListener("click", () => changeTimes("session", 1));
+sessionDec.addEventListener("click", () => changeTimes("session", -1));
 resetBtn.addEventListener('click', resetApp);
 startStop.addEventListener('click', toggleTimer);
 
