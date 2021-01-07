@@ -66,8 +66,8 @@ function changeTimes(timerType, amount){
     let newTime = (timerType === 'session') ? freshTimer.getSession() : freshTimer.getBreak();
     if(newTime + amount >= 60){
         newTime = 60;
-    }else if(newTime + amount <= 0){
-        newTime = 0;
+    }else if(newTime + amount <= 1){
+        newTime = 1;
     }else{
         newTime += amount;
     }
@@ -83,14 +83,15 @@ function changeTimes(timerType, amount){
 }
 
 function resetApp(){
-    breakLength = BEGINBREAK;
-    sessionLength = BEGINSESSION;
+    toggleTimer();
+    freshTimer.setBreak(BEGINBREAK);
+    freshTimer.setSession(BEGINSESSION);
+    freshTimer.timeLeft = [BEGINSESSION, 00];
     updateDisplay();
 }
 
 function countDown(){
     if(freshTimer.isTimerRunning){
-        let currentTimer = freshTimer.currTimer;
         let minutes = freshTimer.timeLeft[0];
         let seconds = freshTimer.timeLeft[1];
         if(minutes > 0){
@@ -102,16 +103,17 @@ function countDown(){
             }
         }else{
             if(seconds == 0){
-                alert("end time")
                 if(freshTimer.currTimer === "session"){
                     freshTimer.setTimerType("break");
                     freshTimer.setTimeLeft(freshTimer.getBreak,00);
+                    minutes = freshTimer.getBreak();
                 }else{
                     freshTimer.setTimerType('session');
                     freshTimer.setTimeLeft(freshTimer.getSession,00);
+                    minutes = freshTimer.getSession();
                 }
                 
-                toggleTimer();
+                
             }else{
                 seconds = ((seconds == 0) ? 59 : seconds -= 1);  
             }
